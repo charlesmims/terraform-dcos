@@ -161,6 +161,29 @@ resource "aws_security_group" "admin" {
   }
 }
 
+# A security group for the bootstrap host so that it is accessible
+# via ssh from the web.
+resource "aws_security_group" "bootstrap" {
+  name = "bootstrap-security-group"
+  description = "SSH access to bootstrap node"
+  vpc_id = "${aws_vpc.default.id}"
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
 # A security group for the ELB so it is accessible via the web
 # with some master ports for internal access only
 resource "aws_security_group" "master" {
